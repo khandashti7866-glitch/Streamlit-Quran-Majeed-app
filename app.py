@@ -3,15 +3,21 @@ import json
 import os
 
 # -------------------------------
-# Load Quran JSON
+# Load Quran JSON with error handling
 # -------------------------------
-
 @st.cache_data
 def load_quran():
-    with open("quran.json", "r", encoding="utf-8") as f:
+    json_path = "quran.json"
+    if not os.path.exists(json_path):
+        st.error(f"❌ quran.json file not found in {os.getcwd()}")
+        return {}  # Return empty dict if file missing
+    with open(json_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 quran = load_quran()
+
+if not quran:
+    st.stop()  # Stop the app if JSON not loaded
 
 # -------------------------------
 # UI Settings
@@ -69,10 +75,16 @@ ayah_numbers = list(surah_data["ayahs"].keys())
 # -------------------------------
 # Ayah Selection
 # -------------------------------
+if "ayah" not in st.session_state:
+    st.session_state["ayah"] = ayah_numbers[0]
+
 ayah_selected = st.selectbox(
     "Select Ayah",
-    ayah_numbers
+    ayah_numbers,
+    index=ayah_numbers.index(st.session_state["ayah"])
 )
+
+st.session_state["ayah"] = ayah_selected
 
 # Get ayah details
 ayah = surah_data["ayahs"][ayah_selected]
@@ -92,7 +104,6 @@ st.markdown("</div>", unsafe_allow_html=True)
 # Previous / Next Buttons
 # -------------------------------
 col1, col2 = st.columns(2)
-
 current_index = ayah_numbers.index(ayah_selected)
 
 with col1:
