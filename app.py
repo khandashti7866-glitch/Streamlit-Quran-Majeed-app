@@ -3,21 +3,61 @@ import json
 import os
 
 # -------------------------------
-# Load Quran JSON with error handling
+# Load Quran JSON with fallback
 # -------------------------------
 @st.cache_data
 def load_quran():
     json_path = "quran.json"
-    if not os.path.exists(json_path):
-        st.error(f"❌ quran.json file not found in {os.getcwd()}")
-        return {}  # Return empty dict if file missing
-    with open(json_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    if os.path.exists(json_path):
+        with open(json_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    else:
+        st.warning("❌ quran.json not found. Loading sample Surah Al-Fatihah")
+        # Sample Surah for testing
+        return {
+            "1": {
+                "name": "Al-Fatihah",
+                "ayahs": {
+                    "1": {
+                        "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+                        "english": "In the name of Allah, the Entirely Merciful, the Especially Merciful.",
+                        "urdu": "اللہ کے نام سے شروع جو بڑا مہربان نہایت رحم والا ہے۔"
+                    },
+                    "2": {
+                        "arabic": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+                        "english": "All praise is due to Allah, Lord of the worlds.",
+                        "urdu": "سب تعریفیں اللہ ہی کے لیے ہیں جو سارے جہان کا رب ہے۔"
+                    },
+                    "3": {
+                        "arabic": "الرَّحْمَٰنِ الرَّحِيمِ",
+                        "english": "The Entirely Merciful, the Especially Merciful.",
+                        "urdu": "بڑا مہربان نہایت رحم والا۔"
+                    },
+                    "4": {
+                        "arabic": "مَالِكِ يَوْمِ الدِّينِ",
+                        "english": "Sovereign of the Day of Recompense.",
+                        "urdu": "روزِ جزا کا مالک۔"
+                    },
+                    "5": {
+                        "arabic": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+                        "english": "It is You we worship and You we ask for help.",
+                        "urdu": "ہم تیری ہی عبادت کرتے ہیں اور تجھ ہی سے مدد مانگتے ہیں۔"
+                    },
+                    "6": {
+                        "arabic": "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+                        "english": "Guide us to the straight path –",
+                        "urdu": "ہمیں سیدھا راستہ دکھا۔"
+                    },
+                    "7": {
+                        "arabic": "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                        "english": "The path of those upon whom You have bestowed favor, not of those who have earned Your anger, nor of those who are astray.",
+                        "urdu": "ان لوگوں کا راستہ جن پر تو نے انعام کیا، نہ کہ جن پر غضب ہوا اور نہ گمراہوں کا۔"
+                    }
+                }
+            }
+        }
 
 quran = load_quran()
-
-if not quran:
-    st.stop()  # Stop the app if JSON not loaded
 
 # -------------------------------
 # UI Settings
